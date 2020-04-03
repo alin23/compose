@@ -1788,6 +1788,7 @@ class _CLIBuilder(object):
         iidfile = tempfile.mktemp()
 
         command_builder = _CommandBuilder()
+        command_builder.add_params("--ssh", {"default": ""})
         command_builder.add_params("--build-arg", buildargs)
         command_builder.add_list("--cache-from", cache_from)
         command_builder.add_arg("--file", dockerfile)
@@ -1815,6 +1816,9 @@ class _CLIBuilder(object):
                 if line.startswith(magic_word):
                     appear = True
                 yield json.dumps({"stream": line})
+
+        if not os.path.exists(iidfile):
+            return
 
         with open(iidfile) as f:
             line = f.readline()
